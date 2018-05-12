@@ -13,24 +13,20 @@ namespace Images.Collect.Models
     public class BuildDb : IDisposable
     {
         private string defaultDirectory;
-        private ImageDbContext db;
 
         public BuildDb()
         {
             defaultDirectory = WebConfigurationManager.AppSettings.GetValues("DefaultDirectory")[0];
-            db = new ImageDbContext();
+            Context = new ImageDbContext();
         }
 
         public void Dispose()
         {
-            if (db != null)
-                db.Dispose();
+            if (Context != null)
+                Context.Dispose();
         }
 
-        public ImageDbContext Context
-        {
-            get { return db; }
-        }
+        public ImageDbContext Context { get; } 
 
         /// <summary>
         ///     Find and save information on all image files under the directory.
@@ -56,7 +52,7 @@ namespace Images.Collect.Models
                     continue;
 
                 imageResults = GetHashString(file);
-                var image = db.Images.Create();
+                var image = Context.Images.Create();
                 image.BaseName = fi.Name.Trim();
                 image.FullName = fi.FullName.Trim();
                 image.Path = fi.DirectoryName.Trim();
@@ -66,10 +62,10 @@ namespace Images.Collect.Models
                 image.Extension = ext.Substring(1);
                 image.Drive = fi.FullName.Substring(0, 1);
                 image.Unreadable = imageResults.unreadable;
-                db.Images.Add(image);
+                Context.Images.Add(image);
                 ++count;
             }
-            db.SaveChanges();
+            Context.SaveChanges();
 
             string[] dirList = Directory.GetDirectories(directory);
             foreach (var dir in dirList)
@@ -82,7 +78,7 @@ namespace Images.Collect.Models
 
         internal void PurgeOldRecords(string path)
         {
-            var images = db.Images.Select(i => path.StartsWith(i.Path));
+            var images = Context.Images.Select(i => path.StartsWith(i.Path));
             
             
         }
@@ -94,7 +90,7 @@ namespace Images.Collect.Models
         /// <returns></returns>
         private bool IsFileInDb(string fullName)
         {
-            var file = db.Images.FirstOrDefault(a => a.FullName == fullName);
+            var file = Context.Images.FirstOrDefault(a => a.FullName == fullName);
             //var file = from f in db.Images
             //           where f.FullName.Equals(fullName)
             //           select f;

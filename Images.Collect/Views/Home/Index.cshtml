@@ -5,31 +5,46 @@
 <br />
 <br />
 <div class="border">
-    @using (Html.BeginForm("DataCollection", "Home", FormMethod.Get))
-    {
-        @Html.ValidationSummary(true)
         <fieldset>
             <div class="container center-block">
                 <input id="btnCollect" class="btn btn-success" type="submit" value="Collect Data" />
                 <span>&nbsp;</span>
                 <input id="cbRecreate" type="checkbox" name="cbRecreate" />
-                <span>Recreate Database</span><br />
+                <span>Recreate Data</span><br />
             </div>
         </fieldset>
-    }
-        <br />
-        <br />
+
+    <br />
+    <br />
     <div id="divSummary" class="container">
-        <span>@ViewBag.Message</span>
     </div>
 
     <div id="divImages" class="container container-fluid">
-
     </div>
 </div>
 
+@section Scripts {
 <script type="text/javascript">
-    $('document').ready(function () {
-
+    $(document).ready(function () {
+        $('#divSummary').html('<p>Page ready</p>');
+        $('#btnCollect').on('click', function (event) {
+            $.ajax({
+                url: 'Home/DataCollection',
+                type: 'GET',
+                dataType: 'html',
+                data: { regenerate: $('#cbRecreate').is(':checked') },
+                beforeSend: function () {
+                    $('#divSummary').empty();
+                    $('#divSummary').append('Processing...');
+                },
+                success: function (data) {
+                    $('#divSummary').html(data);
+                },
+                error: function(jqXhr, textStatus, errorMessage) {
+                    $('#summary').append('Error: ' + errorMessage);
+                }
+            });
+        });
     });
 </script>
+    }

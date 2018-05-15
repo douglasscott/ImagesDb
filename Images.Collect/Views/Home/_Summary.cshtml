@@ -1,4 +1,11 @@
-﻿
-<div>
-    <h4>Data Summary</h4>
-</div>
+﻿@model Images.Collect.Models.ProcessSummary
+
+<h3>Summary</h3>
+<p>
+    <ul>
+        <li>New records added: @Model.NewRecords.ToString()</li>
+        <li>Total records stored: @Model.TotalRecords.ToString()</li>
+        <li>Last Elapsed time: @Model.LastProcessTime.ToString()</li>
+    </ul>
+
+</p>

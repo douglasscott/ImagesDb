@@ -7,13 +7,13 @@ namespace Images.Collect.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class CreateImageDb : IMigrationMetadata
+    public sealed partial class FixedLengths : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(CreateImageDb));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(FixedLengths));
         
         string IMigrationMetadata.Id
         {
-            get { return "201805112157211_CreateImageDb"; }
+            get { return "201805151501161_FixedLengths"; }
         }
         
         string IMigrationMetadata.Source

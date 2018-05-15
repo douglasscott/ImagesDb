@@ -13,10 +13,12 @@ namespace Images.Collect.Models
     public class BuildDb : IDisposable
     {
         private string defaultDirectory;
+        private string[] extensionList;
 
         public BuildDb()
         {
             defaultDirectory = WebConfigurationManager.AppSettings.GetValues("DefaultDirectory")[0];
+            extensionList = WebConfigurationManager.AppSettings.GetValues("ExtensionList")[0].Split(';');
             Context = new ImageDbContext();
         }
 
@@ -26,14 +28,14 @@ namespace Images.Collect.Models
                 Context.Dispose();
         }
 
-        public ImageDbContext Context { get; } 
+        public ImageDbContext Context { get; }
 
         /// <summary>
         ///     Find and save information on all image files under the directory.
         ///     May be called recursively to process subdirectories.
         /// </summary>
         /// <param name="directory"></param>
-        /// <returns></returns>
+        /// <returns>Number of files added to database</returns>
         public int hashDirectory(string directory)
         {
             ImageData imageResults = new ImageData();
@@ -42,13 +44,9 @@ namespace Images.Collect.Models
             foreach (var file in fileList)
             {
                 var fi = new FileInfo(file);
-                var ext = Path.GetExtension(file).ToLower();
+                var ext = Path.GetExtension(file).ToLower().Substring(1);
 
-                // todo: convert this to some expression and read extensions from config
-                if (ext != ".jpg" && ext != "jpeg" && ext != ".gif" && ext != ".png" && ext != ".mov" && ext != "bmp")
-                    continue;
-
-                if (IsFileInDb(fi.FullName.Trim()))
+                if (!extensionList.Contains(ext) || IsFileInDb(fi.FullName.Trim()))
                     continue;
 
                 imageResults = GetHashString(file);
@@ -59,7 +57,7 @@ namespace Images.Collect.Models
                 image.FileSize = fi.Length;
                 image.FileDate = fi.LastWriteTimeUtc;
                 image.Hash = imageResults.hash;
-                image.Extension = ext.Substring(1);
+                image.Extension = ext;
                 image.Drive = fi.FullName.Substring(0, 1);
                 image.Unreadable = imageResults.unreadable;
                 Context.Images.Add(image);
@@ -78,9 +76,15 @@ namespace Images.Collect.Models
 
         internal void PurgeOldRecords(string path)
         {
-            var images = Context.Images.Select(i => path.StartsWith(i.Path));
-            
-            
+            var images = Context.Images.Where(i => i.Path.StartsWith(path)).ToList();
+            if (images.Any())
+            {
+                foreach (var image in images)
+                {
+                    Context.Images.Remove(entity: image);
+                }
+                Context.SaveChanges();
+            }
         }
 
         /// <summary>

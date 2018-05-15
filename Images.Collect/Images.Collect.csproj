@@ -170,18 +170,28 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\DataController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201805112157211_CreateImageDb.cs" />
-    <Compile Include="Migrations\201805112157211_CreateImageDb.Designer.cs">
-      <DependentUpon>201805112157211_CreateImageDb.cs</DependentUpon>
+    <Compile Include="Migrations\201805151436261_CreateImageTable.cs" />
+    <Compile Include="Migrations\201805151436261_CreateImageTable.Designer.cs">
+      <DependentUpon>201805151436261_CreateImageTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805151444502_FileNameLen.cs" />
+    <Compile Include="Migrations\201805151444502_FileNameLen.Designer.cs">
+      <DependentUpon>201805151444502_FileNameLen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805151501161_FixedLengths.cs" />
+    <Compile Include="Migrations\201805151501161_FixedLengths.Designer.cs">
+      <DependentUpon>201805151501161_FixedLengths.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BuildDb.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\ImageData.cs" />
+    <Compile Include="Models\ProcessSummary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -275,8 +285,14 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201805112157211_CreateImageDb.resx">
-      <DependentUpon>201805112157211_CreateImageDb.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201805151436261_CreateImageTable.resx">
+      <DependentUpon>201805151436261_CreateImageTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805151444502_FileNameLen.resx">
+      <DependentUpon>201805151444502_FileNameLen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805151501161_FixedLengths.resx">
+      <DependentUpon>201805151501161_FixedLengths.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

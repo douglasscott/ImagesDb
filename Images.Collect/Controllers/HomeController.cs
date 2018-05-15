@@ -12,6 +12,7 @@ using Images.Collect.Models;
 
 namespace Images.Collect.Controllers
 {
+    [RoutePrefix("Home")]
     public class HomeController : Controller
     {
         // image location for testing
@@ -36,13 +37,23 @@ namespace Images.Collect.Controllers
             return View();
         }
 
-        [HttpGet]
-        public ActionResult DataCollection()
+        public ActionResult Summary()
         {
+            return PartialView("_Summary", new ProcessSummary());
+        }
+
+        [HttpGet]
+        [Route(template: "DataCollection")]
+        public ActionResult DataCollection(string regenerate)
+        {
+            int count = 0;
+            var summary = new ProcessSummary();
+            var time = Stopwatch.StartNew();
+
             // scan folders to load the database
             using (var context = new BuildDb())
             {
-                var recreate = Request.QueryString["cbRecreate"];
+                //var recreate = Request.QueryString["cbRecreate"];
 
                 // create the database if it doesn't exist
                 if (!context.Context.Database.Exists())
@@ -51,19 +62,21 @@ namespace Images.Collect.Controllers
                 }
                 else
                 {
-                    if (recreate != null)
+                    if (regenerate == "true")
                     {
                         context.PurgeOldRecords(defaultDirectory);
                     }
                 }
 
-                var count = context.hashDirectory(defaultDirectory);
+                count = context.hashDirectory(defaultDirectory);
 
                 // display the database summary
-                ViewBag.Message = $"{count} new records added to Image database.";
+                summary.NewRecords = count;
+                summary.TotalRecords = context.Context.Images.Count();
+                summary.LastProcessTime = time.Elapsed;
 
             }
-            return View("Index");
+            return PartialView("_Summary", summary);
         }
     }
 }

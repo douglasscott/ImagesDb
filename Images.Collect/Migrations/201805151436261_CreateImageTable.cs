@@ -3,7 +3,7 @@ namespace Images.Collect.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class CreateImageDb : DbMigration
+    public partial class CreateImageTable : DbMigration
     {
         public override void Up()
         {
@@ -12,12 +12,12 @@ namespace Images.Collect.Migrations
                 c => new
                     {
                         id = c.Int(nullable: false, identity: true),
-                        FullName = c.String(),
-                        BaseName = c.String(),
+                        FullName = c.String(maxLength: 30),
+                        BaseName = c.String(maxLength: 30),
                         Path = c.String(),
                         Extension = c.String(maxLength: 10),
                         Drive = c.String(maxLength: 3),
-                        Hash = c.String(),
+                        Hash = c.String(maxLength: 80),
                         Unreadable = c.Boolean(nullable: false),
                         FileSize = c.Long(nullable: false),
                         FileDate = c.DateTime(),

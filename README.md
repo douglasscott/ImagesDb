@@ -8,13 +8,12 @@ Date: 2018/05/11
 
 Changes:
 
-2018/05/11 Placed original version on Github (originally named Images)
-2018/05/12 Renamed repository to ImagesDB
+* 2018/05/11 Placed original version on Github (originally named Images)
+* 2018/05/12 Renamed repository to ImagesDB
+* 2018/05/15 Changes to database, limited purge and replace working
 
 TODO List
 
-* Allow part of database to be purged so it can be recreated by deleting records based on path.
-* Display summary on main page.
 * Allow processing to be dynamically updated via SignalR
 * Display list of pictures in database
 * Put pictures into carosole to display them (probably need to limit to directory)

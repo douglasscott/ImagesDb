@@ -44,7 +44,7 @@ namespace Images.Collect.Controllers
 
         [HttpGet]
         [Route(template: "DataCollection")]
-        public ActionResult DataCollection(string regenerate)
+        public ActionResult DataCollection(bool regenerate)
         {
             int count = 0;
             var summary = new ProcessSummary();
@@ -62,7 +62,7 @@ namespace Images.Collect.Controllers
                 }
                 else
                 {
-                    if (regenerate == "true")
+                    if (regenerate == true)
                     {
                         context.PurgeOldRecords(defaultDirectory);
                     }

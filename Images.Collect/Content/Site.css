@@ -23,9 +23,13 @@ textarea {
     max-width: 280px;
 }
 
-border {
+.border {
     padding-top: 15px;
     padding-bottom: 15px;
     padding-left: 15px;
     padding-right: 15px
+}
+
+.marked {
+    border: 5px solid red;
 }

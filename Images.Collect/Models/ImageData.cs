@@ -5,6 +5,9 @@ using System.Web;
 
 namespace Images.Collect.Models
 {
+    /// <summary>
+    ///     To hold information returned by the hashDirectory functions
+    /// </summary>
     public class ImageData
     {
         public bool unreadable;

@@ -5,21 +5,24 @@
 <br />
 <br />
 <div class="container border marked">
-        <fieldset>
-            <div class="container center-block">
-                <input id="btnCollect" class="btn btn-success" type="submit" value="Collect Data" />
-                <span>&nbsp;</span>
-                <input id="cbRecreate" type="checkbox" name="cbRecreate" />
-                <span>Recreate Data</span><br />
-            </div>
-        </fieldset>
+    <fieldset>
+        <div class="container center-block">
+            <input id="btnCollect" class="btn btn-success" type="submit" value="Collect Data" />
+            <span>&nbsp;</span>
+            <input id="cbRecreate" type="checkbox" name="cbRecreate" />
+            <span>Recreate Data</span>
+            <span>&nbsp;</span>
+            <input id="btnListDups" class="btn btn-success" type="submit" value="List Duplicates" />
+            <br />
+        </div>
+    </fieldset>
 
     <br />
     <br />
-    <div id="divSummary" class="container marked">
+    <div id="divSummary" class="container">
     </div>
 
-    <div id="divImages" class="container container-fluid marked">
+    <div id="divImages" class="container container-fluid">
     </div>
 </div>
 
@@ -29,7 +32,7 @@
         $('#divSummary').html('<p>Page ready</p>');
         $('#btnCollect').on('click', function (event) {
             $.ajax({
-                url: 'Home/DataCollection',
+                url: '/Home/DataCollection',
                 type: 'GET',
                 dataType: 'html',
                 data: { regenerate: $('#cbRecreate').is(':checked') },
@@ -40,11 +43,57 @@
                 success: function (data) {
                     $('#divSummary').html(data);
                 },
-                error: function(jqXhr, textStatus, errorMessage) {
-                    $('#summary').append('Error: ' + errorMessage);
+                error: function (jqXhr, textStatus, errorMessage) {
+                    $('#divSummary').append('Error: ' + errorMessage);
                 }
             });
         });
+        $('#btnListDups').on('click', function (event) {
+
+            $.ajax({
+                url: '/images/Duplicates',
+                type: 'GET',
+                dataType: 'json',
+                beforeSend: function() {
+                    console.log('before send');
+                    $('#divSummary').empty();
+                    $('#divSummary').append('Processing...');
+                }
+            })
+            .done(function (data) {
+                displayDups(data);
+            })
+            .fail(function (jqXhr, textStatus, errorMessage) {
+                console.log('jqXhr: ');
+                console.log(jqXhr);
+                console.log('textStatus: ' + textStatus);
+                console.log('errorMessage: ' + errorMessage);
+                $('#divSummary').append('Error: ' + errorMessage);
+            });
+        });
     });
+
+    var heading = ['BaseName', 'Extension', 'FileSize', 'FileDate' ];
+
+    // display selected image information in list
+    var displayDups = function (data) {
+        var table = $('<table class="table">');
+        tblHeader = $('<tr>');
+        for (var i = 0; i < heading.length; i++) {
+            tblHeader.append('<th>' + heading[i] + '</th>');
+        }
+        table.append(tblHeader);
+        $.each(data, function (index, value) {
+            var row = $('<tr>');
+            $.each(value, function (key, val) {
+                if (heading.indexOf(key) > -1) {
+                    row.append('<td>' + val + '</td>');
+                }
+            });
+            table.append(row);
+        });
+        $('#divSummary').empty();
+        $('#divSummary').append(table);
+    }
 </script>
     }

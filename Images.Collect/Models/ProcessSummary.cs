@@ -11,12 +11,14 @@ namespace Images.Collect.Models
         public int NewRecords;
         public int TotalRecords;
         public TimeSpan LastProcessTime;
+        public string ErrorMessage;
 
         public ProcessSummary()
         {
             NewRecords = 0;
             TotalRecords = 0;
             LastProcessTime = new TimeSpan();
+            ErrorMessage = string.Empty;
         }
     }
 }

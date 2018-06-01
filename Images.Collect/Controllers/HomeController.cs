@@ -42,6 +42,13 @@ namespace Images.Collect.Controllers
             return PartialView("_Summary", new ProcessSummary());
         }
 
+        /// <summary>
+        ///     Build the database and collect the image data.  
+        ///     todo: This method will probably be changed to return Json later.  
+        ///     todo: At that time it will probably be moved into another class.
+        /// </summary>
+        /// <param name="regenerate"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route(template: "DataCollection")]
         public ActionResult DataCollection(bool regenerate)
@@ -53,8 +60,6 @@ namespace Images.Collect.Controllers
             // scan folders to load the database
             using (var context = new BuildDb())
             {
-                //var recreate = Request.QueryString["cbRecreate"];
-
                 // create the database if it doesn't exist
                 if (!context.Context.Database.Exists())
                 {
@@ -74,9 +79,17 @@ namespace Images.Collect.Controllers
                 summary.NewRecords = count;
                 summary.TotalRecords = context.Context.Images.Count();
                 summary.LastProcessTime = time.Elapsed;
-
             }
+
+            // todo: switch this to Json and let page handle display
             return PartialView("_Summary", summary);
+        }
+
+        
+
+        private void ErrorMessage(string message)
+        {
+            
         }
     }
 }

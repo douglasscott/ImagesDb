@@ -15,6 +15,8 @@ namespace Images.Collect.Models
         private string defaultDirectory;
         private string[] extensionList;
 
+        public ImageDbContext Context { get; }
+
         public BuildDb()
         {
             defaultDirectory = WebConfigurationManager.AppSettings.GetValues("DefaultDirectory")[0];
@@ -22,13 +24,14 @@ namespace Images.Collect.Models
             Context = new ImageDbContext();
         }
 
+        /// <summary>
+        ///     The interface made me do it.
+        /// </summary>
         public void Dispose()
         {
             if (Context != null)
                 Context.Dispose();
         }
-
-        public ImageDbContext Context { get; }
 
         /// <summary>
         ///     Find and save information on all image files under the directory.
@@ -40,30 +43,37 @@ namespace Images.Collect.Models
         {
             ImageData imageResults = new ImageData();
             int count = 0;
-            string[] fileList = Directory.GetFiles(directory);
-            foreach (var file in fileList)
+            try
             {
-                var fi = new FileInfo(file);
-                var ext = Path.GetExtension(file).ToLower().Substring(1);
+                string[] fileList = Directory.GetFiles(directory);
+                foreach (var file in fileList)
+                {
+                    var fi = new FileInfo(file);
+                    var ext = Path.GetExtension(file).ToLower().Substring(1);
 
-                if (!extensionList.Contains(ext) || IsFileInDb(fi.FullName.Trim()))
-                    continue;
+                    if (!extensionList.Contains(ext) || IsFileInDb(fi.FullName.Trim()))
+                        continue;
 
-                imageResults = GetHashString(file);
-                var image = Context.Images.Create();
-                image.BaseName = fi.Name.Trim();
-                image.FullName = fi.FullName.Trim();
-                image.Path = fi.DirectoryName.Trim();
-                image.FileSize = fi.Length;
-                image.FileDate = fi.LastWriteTimeUtc;
-                image.Hash = imageResults.hash;
-                image.Extension = ext;
-                image.Drive = fi.FullName.Substring(0, 1);
-                image.Unreadable = imageResults.unreadable;
-                Context.Images.Add(image);
-                ++count;
+                    imageResults = GetHashString(file);
+                    var image = Context.Images.Create();
+                    image.BaseName = fi.Name.Trim();
+                    image.FullName = fi.FullName.Trim();
+                    image.Path = fi.DirectoryName.Trim();
+                    image.FileSize = fi.Length;
+                    image.FileDate = fi.LastWriteTimeUtc;
+                    image.Hash = imageResults.hash;
+                    image.Extension = ext;
+                    image.Drive = fi.FullName.Substring(0, 1);      // get drive letter
+                    image.Unreadable = imageResults.unreadable;
+                    Context.Images.Add(image);
+                    ++count;
+                }
+                Context.SaveChanges();
             }
-            Context.SaveChanges();
+            catch (Exception ex)
+            {
+
+            }
 
             string[] dirList = Directory.GetDirectories(directory);
             foreach (var dir in dirList)
@@ -91,14 +101,10 @@ namespace Images.Collect.Models
         ///     Does this file already exist in the database
         /// </summary>
         /// <param name="fullName"></param>
-        /// <returns></returns>
+        /// <returns>True if the file is already in the database</returns>
         private bool IsFileInDb(string fullName)
         {
             var file = Context.Images.FirstOrDefault(a => a.FullName == fullName);
-            //var file = from f in db.Images
-            //           where f.FullName.Equals(fullName)
-            //           select f;
-
             return file != null;
         }
 

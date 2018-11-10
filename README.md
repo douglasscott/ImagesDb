@@ -11,6 +11,7 @@ Changes:
 * 2018/05/11 Placed original version on Github (originally named Images)
 * 2018/05/12 Renamed repository to ImagesDB
 * 2018/05/15 Changes to database, limited purge and replace working
+* 2018/06/01 List duplicate files
 
 TODO List
 

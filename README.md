@@ -12,6 +12,7 @@ Changes:
 * 2018/05/12 Renamed repository to ImagesDB
 * 2018/05/15 Changes to database, limited purge and replace working
 * 2018/06/01 List duplicate files
+* 2019/02/23 Updated bootstrap from 3.3.7 to 3.4.1
 
 TODO List
 
@@ -21,3 +22,4 @@ TODO List
 * Add option for full screen display of given picture.
 * Flag all pictures with matching hash strings.
 * Gather metadata from images.
+* Upgrade to bootstrap 4
